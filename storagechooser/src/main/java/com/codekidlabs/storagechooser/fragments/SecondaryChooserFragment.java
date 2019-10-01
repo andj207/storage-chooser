@@ -273,26 +273,20 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 bringBackSingleMode();
                 secondaryChooserAdapter.notifyDataSetChanged();
 
-            } else {
-                if (!mConfig.isSkipOverview()) {
-                    if (theSelectedPath.equals(mBundlePath)) {
-                        SecondaryChooserFragment.this.dismiss();
+            } else if (theSelectedPath.equals(mBundlePath)) {
+                SecondaryChooserFragment.this.dismiss();
 
-                        //delay until close animation ends
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
-                            }
-                        }, 200);
-                    } else {
-                        theSelectedPath = theSelectedPath.substring(0, slashIndex);
-                        StorageChooser.LAST_SESSION_PATH = theSelectedPath;
-                        populateList("");
+                //delay until close animation ends
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
                     }
-                } else {
-                    dissmissDialog(FLAG_DISSMISS_NORMAL);
-                }
+                }, 200);
+            } else {
+                theSelectedPath = theSelectedPath.substring(0, slashIndex);
+                StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                populateList("");
             }
         } else {
             // let's just say that there is no / in the path at any given point
@@ -310,8 +304,14 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         switch (flag) {
             case FLAG_DISSMISS_INIT_DIALOG:
-                ChooserDialogFragment c = new ChooserDialogFragment();
-                c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
+                if (!mConfig.isSkipOverview()){
+                    ChooserDialogFragment c = new ChooserDialogFragment();
+                    c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
+                }
+                else {
+                    StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                    this.dismiss();
+                }
                 break;
             case FLAG_DISSMISS_NORMAL:
                 StorageChooser.LAST_SESSION_PATH = theSelectedPath;
