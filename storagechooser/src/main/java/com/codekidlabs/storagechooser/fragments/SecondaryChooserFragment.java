@@ -236,7 +236,22 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private void hideAddFolderView() {
         Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_close_folder_view);
         mNewFolderView.startAnimation(anim);
-        mNewFolderView.setVisibility(View.INVISIBLE);
+
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mNewFolderView.clearAnimation();
+                mNewFolderView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
 
         if (DiskUtil.isLollipopAndAbove()) {
             mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
@@ -249,8 +264,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         //listview should be clickable
         SecondaryChooserAdapter.shouldEnable = true;
 
-        mInactiveGradient.startAnimation(anim);
-        mInactiveGradient.setVisibility(View.INVISIBLE);
+       mInactiveGradient.startAnimation(anim);
 
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.plus));
     }
@@ -381,8 +395,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private void updateUI() {
 
         //at start dont show the new folder view unless user clicks on the add/plus button
-        mNewFolderView.setVisibility(View.INVISIBLE);
-        mInactiveGradient.setVisibility(View.INVISIBLE);
+        mNewFolderView.setVisibility(View.GONE);
+        mInactiveGradient.setVisibility(View.GONE);
 
 
         mFolderNameEditText.setHint(mContent.getTextfieldHintText());
@@ -827,7 +841,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            mFilesProgress.setVisibility(View.INVISIBLE);
+            mFilesProgress.setVisibility(View.GONE);
             setAdapterList(this.fileList);
             refreshList();
             setBundlePathOnUpdate();
