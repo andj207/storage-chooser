@@ -457,11 +457,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         mNewFolderImageView = mLayout.findViewById(R.id.new_folder_iv);
         mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
-
-        if (!mConfig.isAllowAddFolder()) {
-            mNewFolderButtonHolder.setVisibility(View.GONE);
-        }
-
+        mNewFolderButtonHolder.setVisibility(!mConfig.isAllowAddFolder() ? View.GONE : View.VISIBLE);
     }
 
 
