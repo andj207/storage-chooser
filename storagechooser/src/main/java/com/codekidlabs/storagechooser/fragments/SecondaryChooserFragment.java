@@ -348,29 +348,33 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
-        mConfig = StorageChooser.sConfig;
-        scheme = mConfig.getScheme();
-        mHandler = new Handler();
+        try {
+            mConfig = StorageChooser.sConfig;
+            scheme = mConfig.getScheme();
+            mHandler = new Handler();
 
-        // init storage-chooser content [localization]
-        if (mConfig.getContent() == null) {
-            mContent = new Content();
-        } else {
-            mContent = mConfig.getContent();
+            // init storage-chooser content [localization]
+            if (mConfig.getContent() == null) {
+                mContent = new Content();
+            } else {
+                mContent = mConfig.getContent();
+            }
+
+            final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.DialogTheme);
+            LayoutInflater li = inflater.cloneInContext(contextThemeWrapper);
+
+            mContext = getActivity().getApplicationContext();
+            mResourceUtil = new ResourceUtil(mContext);
+            mLayout = li.inflate(R.layout.custom_storage_list, container, false);
+
+            initListView(mContext, mLayout, mConfig.isShowMemoryBar());
+
+            initUI();
+            initNewFolderView();
+            updateUI();
+        } catch (Throwable e){
+            Log.e(TAG, e.getMessage(), e);
         }
-
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.DialogTheme);
-        LayoutInflater li = inflater.cloneInContext(contextThemeWrapper);
-
-        mContext = getActivity().getApplicationContext();
-        mResourceUtil = new ResourceUtil(mContext);
-        mLayout = li.inflate(R.layout.custom_storage_list, container, false);
-
-        initListView(mContext, mLayout, mConfig.isShowMemoryBar());
-
-        initUI();
-        initNewFolderView();
-        updateUI();
 
         return mLayout;
     }
@@ -754,7 +758,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooser.dialog;
         if(getActivity() != null) {
-            d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
+            View view = getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer);
+            if (view != null){
+                d.setContentView(view);
+            }
         }
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
