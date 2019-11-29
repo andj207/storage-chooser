@@ -27,7 +27,10 @@ public class UniversalFileFilter implements FileFilter {
 
     public UniversalFileFilter(boolean customLock, List<String> customEnum) {
         this.customEnumLock = customLock;
-        this.customEnum = customEnum;
+        this.customEnum = new ArrayList<>();
+        for (String etx: customEnum){
+            this.customEnum.add(etx.toLowerCase());
+        }
     }
 
     private String getFileExtension(File f) {
@@ -59,7 +62,7 @@ public class UniversalFileFilter implements FileFilter {
         if (ext == null) return false;
         try {
             if (customEnumLock) {
-                return customEnum.contains(ext);
+                return customEnum.contains(ext.toLowerCase());
             } else {
                 if (getFormatExtention(ext) != null) {
                     return true;
