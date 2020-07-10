@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.codekidlabs.storagechooser.R;
 
+import java.io.File;
+
 public class ThumbnailUtil {
 
     // Constant extensions
@@ -60,6 +62,10 @@ public class ThumbnailUtil {
     private void thumbnailPipe(ImageView imageView, String filePath) {
         String extension = getExtension(filePath);
 
+        if (extension.equals(filePath)){
+            imageView.setImageDrawable(getDrawableFromRes(R.drawable.ic_folder_icon));
+            return;
+        }
 
         switch (extension) {
             case TEXT_FILE:
@@ -109,6 +115,10 @@ public class ThumbnailUtil {
             case PDF_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.pdf));
                 break;
+
+            default:
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
+                break;
         }
     }
 
@@ -117,6 +127,6 @@ public class ThumbnailUtil {
     }
 
     private String getExtension(String path) {
-        return path.substring(path.lastIndexOf(".") + 1, path.length());
+        return path.substring(path.lastIndexOf(".") + 1);
     }
 }

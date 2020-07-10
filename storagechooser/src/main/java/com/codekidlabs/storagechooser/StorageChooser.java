@@ -206,6 +206,7 @@ public class StorageChooser {
         private StorageChooser.Theme theme;
         private StorageChooser.FileType filter;
         private ArrayList<StorageChooser.FileType> multipleFilter;
+        private FileCreationHelper fileCreationHelper;
 
         public Builder() {
             devConfig = new Config();
@@ -357,6 +358,11 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder setFileCreationHelper(FileCreationHelper helper){
+            fileCreationHelper = helper;
+            return this;
+        }
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
@@ -374,6 +380,7 @@ public class StorageChooser {
             devConfig.setMemorybarHeight(mMemorybarHeight);
             devConfig.setHeadingFromAssets(mHeadingFromAssets);
             devConfig.setListFromAssets(mListFromAssets);
+            devConfig.setFileCreationHelper(fileCreationHelper);
 
             type = (type == null) ? StorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);

@@ -133,7 +133,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         @Override
         public void onClick(View view) {
             if (validateFolderName()) {
-                boolean success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
+                boolean success;
+                if (mConfig.getFileCreationHelper() != null){
+                    success = mConfig.getFileCreationHelper().createDirectory(new File(mFolderNameEditText.getText().toString().trim(), theSelectedPath).getAbsolutePath());
+                }
+                else {
+                    success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
+                }
                 if (success) {
                     Toast.makeText(mContext, mContent.getFolderCreatedToastText(), Toast.LENGTH_SHORT).show();
                     trimPopulate(theSelectedPath);

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.widget.ListView;
 
 import com.codekidlabs.storagechooser.Content;
+import com.codekidlabs.storagechooser.FileCreationHelper;
 import com.codekidlabs.storagechooser.StorageChooser;
 
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class Config {
 
     //multi
     private boolean multiSelect = true;
+
+    private FileCreationHelper fileCreationHelper;
 
     private String secondaryAction;
 
@@ -294,5 +297,13 @@ public class Config {
 
     public void setMultiSelect(boolean multiSelect) {
         this.multiSelect = multiSelect;
+    }
+
+    public FileCreationHelper getFileCreationHelper() {
+        return fileCreationHelper;
+    }
+
+    public void setFileCreationHelper(FileCreationHelper fileCreationHelper) {
+        this.fileCreationHelper = fileCreationHelper;
     }
 }
