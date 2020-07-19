@@ -29,7 +29,6 @@ public class StorageChooser {
     public static OnMultipleSelectListener onMultipleSelectListener;
     public static String LAST_SESSION_PATH = null;
     private final String TAG = this.getClass().getName();
-    private Activity chooserActivity;
 
     /**
      * basic constructor of StorageChooser
@@ -38,7 +37,6 @@ public class StorageChooser {
      */
     StorageChooser(Activity activity, Config config) {
         setsConfig(config);
-        setChooserActivity(activity);
     }
 
     /**
@@ -63,15 +61,15 @@ public class StorageChooser {
     /**
      * show() shows the storage chooser dialog
      */
-    public void show() {
-        init();
+    public void show(Activity activity) {
+        init(activity);
     }
 
     /**
      * init() creates the storage chooser dialog
      */
-    private void init() {
-        dialog = getStorageChooserDialog(getChooserActivity());
+    private void init(Activity activity) {
+        dialog = getStorageChooserDialog(activity);
 
         // check if listeners are set to avoid crash
         if (onSelectListener == null) {
@@ -120,14 +118,6 @@ public class StorageChooser {
 
     public void setOnMultipleSelectListener(OnMultipleSelectListener onMultipleSelectListener) {
         StorageChooser.onMultipleSelectListener = onMultipleSelectListener;
-    }
-
-    private Activity getChooserActivity() {
-        return chooserActivity;
-    }
-
-    private void setChooserActivity(Activity chooserActivity) {
-        this.chooserActivity = chooserActivity;
     }
 
     private OnSelectListener getDefaultOnSelectListener() {

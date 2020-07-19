@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import static com.codekidlabs.storagechooser.StorageChooser.Theme;
+import static com.codekidlabs.storagechooser.StorageChooser.onSelectListener;
 
 
 public class SecondaryChooserFragment extends android.app.DialogFragment {
@@ -135,7 +137,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             if (validateFolderName()) {
                 boolean success;
                 if (mConfig.getFileCreationHelper() != null){
-                    success = mConfig.getFileCreationHelper().createDirectory(new File(mFolderNameEditText.getText().toString().trim(), theSelectedPath).getAbsolutePath());
+                    success = mConfig.getFileCreationHelper().createDirectory(new File(theSelectedPath, mFolderNameEditText.getText().toString().trim()).getAbsolutePath());
                 }
                 else {
                     success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
@@ -289,13 +291,15 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
+        File parentFile = new File(theSelectedPath).getParentFile();
 
         if(slashIndex != -1) {
             if (MODE_MULTIPLE) {
                 bringBackSingleMode();
                 secondaryChooserAdapter.notifyDataSetChanged();
 
-            } else if (theSelectedPath.equals(mBundlePath)) {
+            } else if (parentFile == null || !parentFile.canRead()) {
+                onSelectListener.onSelect(null);
                 SecondaryChooserFragment.this.dismiss();
 
                 //delay until close animation ends
@@ -775,6 +779,17 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         d.getWindow().setAttributes(lp);
+        d.setOnKeyListener((dialog, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                if (StorageChooser.getsConfig().isMultiSelect() && StorageChooser.onMultipleSelectListener != null){
+                    StorageChooser.onMultipleSelectListener.onDone(new ArrayList<String>());
+                }
+                else if (StorageChooser.onSelectListener != null){
+                    StorageChooser.onSelectListener.onSelect(null);
+                }
+            }
+            return false;
+        });
         return d;
     }
 
@@ -783,6 +798,11 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         super.onDismiss(dialog);
         theSelectedPath = "";
         mAddressClippedPath = "";
+        StorageChooser.dialog = null;
+        StorageChooser.onMultipleSelectListener = null;
+        StorageChooser.onSelectListener = null;
+        StorageChooser.onCancelListener = null;
+        StorageChooser.sConfig = null;
     }
 
     @Override

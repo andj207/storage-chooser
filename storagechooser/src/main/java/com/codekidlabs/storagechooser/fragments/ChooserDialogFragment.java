@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -303,6 +304,28 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         d.getWindow().setAttributes(lp);
+        d.setOnKeyListener((dialog, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                if (StorageChooser.getsConfig().isMultiSelect() && StorageChooser.onMultipleSelectListener != null){
+                    StorageChooser.onMultipleSelectListener.onDone(new ArrayList());
+                }
+                else if (StorageChooser.onSelectListener != null){
+                    StorageChooser.onSelectListener.onSelect(null);
+                }
+            }
+            return false;
+        });
         return d;
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        StorageChooser.dialog = null;
+        StorageChooser.onMultipleSelectListener = null;
+        StorageChooser.onSelectListener = null;
+        StorageChooser.onCancelListener = null;
+        StorageChooser.sConfig = null;
     }
 }
