@@ -153,7 +153,7 @@ public class StorageChooser {
 
     public interface OnSelectListener {
 
-        void onSelect(String path);
+        void onSelect(@Nullable String path);
     }
 
     public interface OnCancelListener {

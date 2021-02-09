@@ -110,7 +110,9 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 Log.d("StorageChooser", "Chosen path: " + theSelectedPath);
             }
 
-            StorageChooser.onSelectListener.onSelect(theSelectedPath);
+            if (StorageChooser.onSelectListener != null) {
+                StorageChooser.onSelectListener.onSelect(theSelectedPath);
+            }
             dissmissDialog(FLAG_DISSMISS_NORMAL);
         }
 
@@ -164,7 +166,9 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                         if (FileUtil.isDir(jointPath)) {
                             populateList("/" + customStoragesList.get(i));
                         } else {
-                            StorageChooser.onSelectListener.onSelect(jointPath);
+                            if (StorageChooser.onSelectListener != null){
+                                StorageChooser.onSelectListener.onSelect(jointPath);
+                            }
                             dissmissDialog(FLAG_DISSMISS_NORMAL);
                         }
                     }
